@@ -1,0 +1,30 @@
+const { MessageEmbed, CommandInteraction, Client, MessageButton, MessageActionRow } = require("discord.js")
+
+module.exports = {
+    name: "about",
+    description: "Show Classical's Info",
+
+    /**
+     * 
+     * @param {Client} client 
+     * @param {CommandInteraction} interaction 
+     */
+
+    run: async (client, interaction) => {
+        await interaction.deferReply({
+            ephemeral: false
+        });
+   const row = new MessageActionRow()
+			.addComponents(
+        new MessageButton()
+    .setLabel("Invite")
+    .setStyle("LINK")
+    .setURL(`https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=36768832&scope=applications.commands%20bot`));
+
+      const mainPage = new MessageEmbed()
+            .setAuthor('Classical aka Classy-chan', client.user.avatarURL())
+            .setThumbnail('https://media.discordapp.net/attachments/911899757058867200/914959637843947551/sketch1638213760779.png')
+            .setColor('#805528')
+        await interaction.followUp({embeds: [mainPage], components: [row]});
+    }
+}
