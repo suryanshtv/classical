@@ -1,7 +1,9 @@
 const { MessageEmbed, MessageActionRow, MessageButton, MessageAttachment} = require("discord.js");
 const { convertTime } = require('../../utils/conversion');
 const {base} = require("../../mapping/playerCanvas");
-    
+const ytSr = require("youtube-sr").default;
+const spotifyLink = require("spotify-url-info");
+
 module.exports = async (client, player, track, payload) => {
 
    let baseImage;
@@ -9,7 +11,16 @@ module.exports = async (client, player, track, payload) => {
    let artist = `${track.author}`;
    let durationMS = await convertTime(track.duration);
    let link = track.uri;
-   await base(title, artist, durationMS, link).then((canvas)=> baseImage = new MessageAttachment(canvas.toBuffer(), "base.png"));
+   let thumbnail;
+        if (link.includes('spotify')) {
+            const songMetadata = await spotifyLink.getPreview(link);
+            thumbnail = songMetadata.image;
+        } if (link.includes('youtube')) {
+            const songMetadata = await ytSr.searchOne(link);
+            thumbnail = songMetadata.thumbnail?.url;
+        }
+
+   await base(title, artist, durationMS, link, thumbnail).then((canvas)=> baseImage = new MessageAttachment(canvas.toBuffer(), "base.png"));
 
    const But1 = new MessageButton().setCustomId("skip").setEmoji("852479508408827915").setStyle("SECONDARY");
     

@@ -1,6 +1,6 @@
 module.exports = {
     token: process.env.TOKEN || "NzgxODU2OTE5MDY0MjgxMTI5.X8Du_w.ho-MAoYuDus3MgQ4zElQ13Hv1jY",  // your bot token
-    prefix: process.env.PREFIX || "-", // bot prefix
+    prefix: process.env.PREFIX || "--", // bot prefix
     ownerID: process.env.OWNERID || "690484458209542224", //your discord id
     SpotifyID: process.env.SPOTIFYID || "da8e3b26c42a499e854d63af02c067e8", // spotify client id
     SpotifySecret: process.env.SPOTIFYSECRET || "852c85311add4fcbbf23108f0ed0b5bd", // spotify client secret

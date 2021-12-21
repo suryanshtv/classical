@@ -2,6 +2,7 @@ const { MessageActionRow ,MessageButton, MessageEmbed, MessageAttachment } = req
 const { TrackUtils } = require("erela.js");
 const { convertTime } = require('../../utils/conversion');
 const {spotifyPlaylist, spotifyTrack, youtubePlaylist, youtubeTrack} = require("../../mapping/playerCanvas");
+const ytSr = require("youtube-sr").default;
 
 module.exports = {
     name: "play",
@@ -18,10 +19,6 @@ module.exports = {
    execute: async (message, args, client) => {
 
 	  let SearchString = args.join(" ");
-      if(message.channel.guild.id === "780787493657378847") {
-          message.channel.send("Dev Phase");
-      }
-      else return message.channel.send("This Bot is in development mode!");
        
     const player = client.manager.create({
       guild: message.guild.id,
@@ -33,55 +30,6 @@ module.exports = {
     
     if (player.state !== "CONNECTED") await player.connect();
     try {
-        //if (player.queue.current === null)
-        // {
-        //     //no songs in queue part initialization
-        //     if (SearchString.match(client.Lavasfy.spotifyPattern)) {
-        //         await client.Lavasfy.requestToken();
-        //         let node = client.Lavasfy.nodes.get(client.config.nodes.id);
-        //         let Searched = await node.load(SearchString);
-        //         //playlist
-        //         if (Searched.loadType === "PLAYLIST_LOADED") {
-        //             let songs = [];
-        //             for (let i = 0; i < Searched.tracks.length; i++)
-        //                 songs.push(TrackUtils.build(Searched.tracks[i], message.author));
-        //             player.queue.add(songs);
-        //             if (!player.playing && !player.paused && player.queue.totalSize === Searched.tracks.length)
-        //                 await player.play();
-        //             return message.channel.send({content: `**Added Playlist to queue** [${Searched.playlistInfo.name}](${SearchString}) - [\`${Searched.tracks.length}\`]`});
-        //         //only song
-        //         } else if (Searched.loadType.startsWith("TRACK")) {
-        //             player.queue.add(TrackUtils.build(Searched.tracks[0], message.author));
-        //             if (!player.playing && !player.paused && !player.queue.size)
-        //                 await player.play();
-        //             return message.channel.send({content: `**Added to queue** - [${Searched.tracks[0].info.title}](${Searched.tracks[0].info.uri})`});
-        //         //no results
-        //         } else {
-        //             return message.channel.send({content: `**No results found**`});
-        //         }
-        //
-        //     } else {
-        //         //youtube part
-        //         let Searched = await player.search(SearchString, message.author);
-        //         if (!player)
-        //             return message.channel.send({content: `**No results found**`});
-        //
-        //         if (Searched.loadType === "NO_MATCHES")
-        //             return message.channel.send({content: `**No results found**`});
-        //         else if (Searched.loadType === "PLAYLIST_LOADED") {
-        //             player.queue.add(Searched.tracks);
-        //             if (!player.playing && !player.paused &&
-        //                 player.queue.totalSize === Searched.tracks.length)
-        //                 await player.play();
-        //             return message.channel.send({content: `Playlist added to queue - [${Searched.playlist.name}](${SearchString}) - \`${Searched.tracks.length}\` songs - \`[${await convertTime(Searched.playlist.duration)}]\``});
-        //         } else {
-        //             player.queue.add(Searched.tracks[0], message.author);
-        //             if (!player.playing && !player.paused && !player.queue.size)
-        //                 await player.play();
-        //             return message.channel.send({content: `**Added Song to queue**\n[${Searched.tracks[0].title}](${Searched.tracks[0].uri}) - \`[${await convertTime(Searched.tracks[0].duration)}]\``});
-        //         }
-        //     }
-        // }
             //has songs and has to show the adding images canvas implementation
             //spotify part
             if (SearchString.match(client.Lavasfy.spotifyPattern)) {
@@ -151,9 +99,23 @@ module.exports = {
                  else {
                     //adds the youtube track to the queue
                     player.queue.add(Searched.tracks[0]);
+                    //metadata grab ytsr
+                    //youtube metadata
+                    const songInfo = await ytSr.searchOne(Searched.tracks[0].uri);
+                    let song = {
+                                title: songInfo.title,
+                                url: songInfo.url,
+                                thumbnail: songInfo.thumbnail?.url,
+                                duration: songInfo.durationFormatted,
+                                channel: songInfo.channel?.name,
+                                views: songInfo.views,
+                                uploadedAt: songInfo.uploadedAt,
+                                channelIcon: songInfo.channel?.icon?.url,
+                            };
+
                     //image manipulation for track.
                     let youtubeTrackImage;
-                    await youtubeTrack(Searched, message.author).then((canvas) => youtubeTrackImage = new MessageAttachment(canvas.toBuffer(), 'youtubeTrack.png'));
+                    await youtubeTrack(song, message.author).then((canvas) => youtubeTrackImage = new MessageAttachment(canvas.toBuffer(), 'youtubeTrack.png'));
                     const linkButton = new MessageButton()
                         .setLabel('Track Link')
                         .setURL(Searched.tracks[0].uri)

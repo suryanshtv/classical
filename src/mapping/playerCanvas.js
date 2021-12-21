@@ -5,16 +5,8 @@ const {viewsFormatted} = require("./viewsFormatted");
 const ytSr = require("youtube-sr").default;
 
 module.exports = {
-    async base(title, artist, durationMS, link) {
+    async base(title, artist, durationMS, link, thumbnail) {
         //metadata
-        let thumbnail;
-        if (link.includes('spotify')) {
-            const songMetadata = await spotifyLink.getPreview(link);
-            thumbnail = songMetadata.image;
-        } if (link.includes('youtube')) {
-            const songMetadata = await ytSr.searchOne(link);
-            thumbnail = songMetadata.thumbnail?.url;
-        }
         let songtitlemain = title;
         let songtitle = songtitlemain.slice(0, 28)
         let songtitle1 = songtitlemain.slice(28, 66)+("...")
@@ -135,25 +127,12 @@ module.exports = {
         ctx.drawImage(overlay, 0, 0, canvas.width, canvas.height);
         return canvas;
     },
-    async youtubeTrack(searched, author) {
+    async youtubeTrack(song, author) {
         //fonts
         registerFont('./src/mapping/fonts/NotoSans-Bold.ttf', {family: 'Noto'});
         registerFont('./src/mapping/fonts/NotoSansJP-Bold.otf', {family: 'Noto'});
         registerFont('./src/mapping/fonts/Poppins-Bold.ttf', {family: 'Poppins'});
         registerFont('./src/mapping/fonts/Rubik-Bold.ttf', {family: 'Rubik'});
-
-        //youtube metadata
-        const songInfo = await ytSr.searchOne(searched.tracks[0].uri);
-        let song = {
-            title: songInfo.title,
-            url: songInfo.url,
-            thumbnail: songInfo.thumbnail?.url,
-            duration: songInfo.durationFormatted,
-            channel: songInfo.channel?.name,
-            views: songInfo.views,
-            uploadedAt: songInfo.uploadedAt,
-            channelIcon: songInfo.channel?.icon?.url,
-        };
 
         //fixes with titles and some metadata
         const thumb = song.thumbnail
