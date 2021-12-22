@@ -12,13 +12,13 @@ module.exports = async (client, player, track, payload) => {
    let durationMS = await convertTime(track.duration);
    let link = track.uri;
    let thumbnail;
-        if (link.includes('spotify')) {
-            const songMetadata = await spotifyLink.getPreview(link);
-            thumbnail = songMetadata.image;
-        } if (link.includes('youtube')) {
-            const songMetadata = await ytSr.searchOne(link);
-            thumbnail = songMetadata.thumbnail?.url;
-        }
+   if (link.includes('spotify')) {
+    const songInfo = await spotifyLink.getPreview(link);
+    thumbnail = songInfo.image;
+  } if (link.includes('youtube')) {
+    const songInfo = await ytSr.searchOne(link);
+    thumbnail = songInfo.thumbnail?.url;
+  }
 
    await base(title, artist, durationMS, link, thumbnail).then((canvas)=> baseImage = new MessageAttachment(canvas.toBuffer(), "base.png"));
 

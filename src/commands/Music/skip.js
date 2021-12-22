@@ -28,5 +28,5 @@ execute: async (message, args, client, prefix) => {
 		return message.reply({content: `${emojiskip} **Skipped**\n[${song.title}](${song.uri})`}).then(msg => { setTimeout(() => {msg.delete()}, 3000);
        })
 	
-    }
+    }wwwwwwww
 };

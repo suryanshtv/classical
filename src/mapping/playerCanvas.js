@@ -112,7 +112,7 @@ module.exports = {
         const ctx = canvas.getContext('2d');
         const base = await loadImage('./src/mapping/images/backCover.png');
         ctx.drawImage(base, 482, 2, 483, 295);
-        const thumbnail = await loadImage(searched?.tracks[0].thumbnail);
+        const thumbnail = await loadImage(searched?.tracks[0].displayThumbnail("maxresdefault"));
         ctx.drawImage(thumbnail, 16, 13, 458, 272)
         ctx.font = '26px "Rubik", "Poppins", "Noto"';
         ctx.fillStyle = '#ff3247';

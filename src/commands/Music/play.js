@@ -29,7 +29,91 @@ module.exports = {
     });
     
     if (player.state !== "CONNECTED") await player.connect();
-    try {
+        if (player.queue.length === 0) {
+            try {
+                //has no songs, so will send a message component of only txt
+                //spotify part
+                if (SearchString.match(client.Lavasfy.spotifyPattern)) {
+                    await client.Lavasfy.requestToken();
+                    let node = client.Lavasfy.nodes.get(client.config.nodes.id);
+                    let Searched = await node.load(SearchString);
+                    if (Searched.loadType === "PLAYLIST_LOADED") {
+                        //init songs to be loaded
+                        let songs = [];
+                        //separating songs from playlist
+                        for (let i = 0; i < Searched.tracks.length; i++)
+                            songs.push(TrackUtils.build(Searched.tracks[i], message.author));
+                        player.queue.add(songs);
+                        //if player is ded or something do something
+                        if (!player.playing && !player.paused && player.queue.totalSize === Searched.tracks.length)
+                            await player.play();
+                        //message button component
+                        const linkButton = new MessageButton()
+                            .setLabel('Playlist Link')
+                            .setURL(SearchString)
+                            .setStyle('LINK')
+                        const row = new MessageActionRow().addComponents(linkButton);
+                        //message implementation
+                        return message.channel.send({content: `<:added:869842377202864128> Added Playlist: **${Searched.playlistInfo.name}**\n<:info:851700291716120587> No. of Tracks: ${Searched.tracks.length}\n<:classically:923079588207271957> Requested by ${message.author.username}`, components: [row]});
+                    } else if((Searched.loadType.startsWith("TRACK"))) {
+                        //adds the spotify track to the queue
+                        player.queue.add(TrackUtils.build(Searched.tracks[0], message.author));
+                        //if player is ded or something do something
+                        if (!player.playing && !player.paused && !player.queue.size)
+                            await player.play();
+                        //message button component
+                        const linkButton = new MessageButton()
+                            .setLabel('Track Link')
+                            .setURL(SearchString)
+                            .setStyle('LINK')
+                        const row = new MessageActionRow().addComponents(linkButton);
+                        //message implementation
+                        return message.channel.send({content: `<:added:869842377202864128> Added Track: **${Searched.tracks[0].info.title}**\n<:classically:923079588207271957> Requested by ${message.author.username}`, components: [row]});
+                    }
+                } else {
+                    //youtube part
+                    let Searched = await player.search(SearchString, message.author);
+                    if (!player)
+                        return message.channel.send({embeds: [new MessageEmbed().setColor(client.embedColor).setTimestamp().setDescription("Nothing is playing right now...")]});
+                    if (Searched.loadType === "NO_MATCHES") {
+                        return message.channel.send({embeds: [new MessageEmbed().setColor(client.embedColor).setTimestamp().setDescription("No matches found for that query...")]});
+                    } else if (Searched.loadType === "PLAYLIST_LOADED") {
+                        //adds the youtube playlist to the queue
+                        player.queue.add(Searched.tracks);
+                        //if player is ded or something do something
+                        if (!player.playing && !player.paused && player.queue.totalSize === Searched.tracks.length)
+                            await player.play();
+                        //message components
+                        const linkButton = new MessageButton()
+                            .setLabel('Playlist Link')
+                            .setURL(SearchString)
+                            .setStyle('LINK')
+                            const row = new MessageActionRow().addComponents(linkButton);
+                        //message implementation
+                        return message.channel.send({content: `<:added:869842377202864128> Added Playlist: **${Searched.playlistInfo.name}**\n<:info:851700291716120587> No. of Tracks: ${Searched.tracks.length}\n<:classytube:923085509016829982> Requested by ${message.author.username}`, components: [row]});
+                    }
+                          //only track condition
+                     else {
+                        //adds the youtube track to the queue
+                        player.queue.add(Searched.tracks[0]);
+                        //if player is ded or something do something
+                        if (!player.playing && !player.paused && !player.queue.size)
+                            await player.play();
+                        const linkButton = new MessageButton()
+                            .setLabel('Track Link')
+                            .setURL(Searched.tracks[0].uri)
+                            .setStyle('LINK')
+                            const row = new MessageActionRow().addComponents(linkButton);
+                        //message implementation
+                        return message.channel.send({content: `<:added:869842377202864128> Added Track: **${Searched.tracks[0].title}**\n<:classytube:923085509016829982> Requested by ${message.author.username}`, components: [row]});
+                    }
+    
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        } else { 
+            try {
             //has songs and has to show the adding images canvas implementation
             //spotify part
             if (SearchString.match(client.Lavasfy.spotifyPattern)) {
@@ -128,8 +212,8 @@ module.exports = {
                 }
 
         }
-    } catch (e) {
-        console.log(e);
+          } catch (e) {
+        console.log(e);}
     }
   },
 }
