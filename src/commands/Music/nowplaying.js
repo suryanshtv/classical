@@ -30,10 +30,11 @@ execute: async (message, args, client, prefix) => {
         var current = player.position;
         
         let embed = new MessageEmbed()
-            .setDescription(`${emojimusic} **Now Playing**\n[${song.title}](${song.uri}) - \`[${convertTime(song.duration)}]\`- [${song.requester}] \n\n\`${progressbar(player)}\``)
+            .setDescription(`${emojimusic} **Now Playing**\n[${song.title}](${song.uri}) - \`[${await convertTime(song.duration)}]\`- [${song.requester}] \n\n\`${progressbar(player)}\``)
             .setThumbnail(song.displayThumbnail("3"))
             .setColor(client.embedColor)
-            .addField("\u200b", `\`${convertTime(current)} / ${convertTime(total)}\``)
+            .addField("\u200b", `\`${await convertTime(current)} / ${await convertTime(total)}\``)
+            .setFooter("PS Not yet created a image manipulation for this, too much busy sed")
             return message.channel.send({embeds: [embed]})
 
     }

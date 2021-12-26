@@ -8,4 +8,4 @@ module.exports = async (client, player, oldChannel, newChannel) => {
         player.voiceChannel = newChannel;
         return await player.textChannel.send({ embeds: [new MessageEmbed().setDescription(`Watashiwa moved to ${newChannel}`)]})
       }
-			}
+}

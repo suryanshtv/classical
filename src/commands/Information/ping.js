@@ -11,7 +11,7 @@ module.exports = {
     owner: false,
     execute: async (message, args, client, prefix) => {
       
-  await message.reply({ content: "<a:load:857937540312465428>" }).then(async (msg) => {
+  message.reply({ content: "<a:load:857937540312465428>" }).then(async (msg) => {
   const ping = msg.createdAt - message.createdAt;
   const api_ping = client.ws.ping;
   let lazyPingReply;
@@ -27,7 +27,7 @@ module.exports = {
     .setFooter(`Requested by ${message.author.username}-san`, message.author.avatarURL({ dynamic: true }))
     .setTimestamp();
 
-  await msg.edit({
+  msg.edit({
     content: `${message.author.username}-san, why you are checking my ping, I am already slow...`,
       embeds : [PingEmbed],
   })

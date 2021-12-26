@@ -26,21 +26,18 @@ module.exports = {
         const position = player.position;
         const duration = player.queue.current.duration;
 
-        const emojiforward = client.emoji.forward;
-        const emojirewind = client.emoji.rewind;
-
         const song = player.queue.current;
         
         if (time <= duration) {
             if (time > position) {
                 player.seek(time);
-                return message.reply({content: `${emojiforward} **Forward**\n[${song.title}](${song.uri})\n\`${convertTime(time)} / ${convertTime(duration)}\``});
+                return message.reply({content: `**Forward**\n${song.title}\n\`${await convertTime(time)} / ${await convertTime(duration)}\``});
             } else {
                 player.seek(time);
-          return message.reply({content: `${emojirewind} **Rewind**\n[${song.title}](${song.uri})\n\`${convertTime(time)} / ${convertTime(duration)}\``});
+          return message.reply({content: `**Rewind**\n${song.title}\n\`${await convertTime(time)} / ${await convertTime(duration)}\``});
             }
         } else {
-            return message.reply({content: `Seek duration exceeds Song duration.\nSong duration: \`${convertTime(duration)}\``});
+            return message.reply({content: `Seek duration exceeds Song duration.\nSong duration: \`${await convertTime(duration)}\``});
         }
 	
     }

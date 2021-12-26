@@ -27,9 +27,11 @@ module.exports = {
       selfDeafen: true,
       volume: 80,
     });
-    
+
+    const invisibleChar = "‎";
+
     if (player.state !== "CONNECTED") await player.connect();
-        if (player.queue.length === 0) {
+        if (player.queue.totalSize === 0) {
             try {
                 //has no songs, so will send a message component of only txt
                 //spotify part
@@ -38,6 +40,9 @@ module.exports = {
                     let node = client.Lavasfy.nodes.get(client.config.nodes.id);
                     let Searched = await node.load(SearchString);
                     if (Searched.loadType === "PLAYLIST_LOADED") {
+                        /*
+                        * SPOTIFY PLAYLIST INITIALIZATION
+                        */
                         //init songs to be loaded
                         let songs = [];
                         //separating songs from playlist
@@ -56,7 +61,9 @@ module.exports = {
                         //message implementation
                         return message.channel.send({content: `<:added:869842377202864128> Added Playlist: **${Searched.playlistInfo.name}**\n<:info:851700291716120587> No. of Tracks: ${Searched.tracks.length}\n<:classically:923079588207271957> Requested by ${message.author.username}`, components: [row]});
                     } else if((Searched.loadType.startsWith("TRACK"))) {
-                        //adds the spotify track to the queue
+                        /*
+                        * SPOTIFY TRACK INITIALIZATION
+                        */
                         player.queue.add(TrackUtils.build(Searched.tracks[0], message.author));
                         //if player is ded or something do something
                         if (!player.playing && !player.paused && !player.queue.size)
@@ -76,8 +83,14 @@ module.exports = {
                     if (!player)
                         return message.channel.send({embeds: [new MessageEmbed().setColor(client.embedColor).setTimestamp().setDescription("Nothing is playing right now...")]});
                     if (Searched.loadType === "NO_MATCHES") {
+                        /*
+                        * NO MATCH SADLY
+                        */
                         return message.channel.send({embeds: [new MessageEmbed().setColor(client.embedColor).setTimestamp().setDescription("No matches found for that query...")]});
                     } else if (Searched.loadType === "PLAYLIST_LOADED") {
+                        /*
+                        * YOUTUBE PLAYLIST INITIALIZATION
+                        */
                         //adds the youtube playlist to the queue
                         player.queue.add(Searched.tracks);
                         //if player is ded or something do something
@@ -91,9 +104,10 @@ module.exports = {
                             const row = new MessageActionRow().addComponents(linkButton);
                         //message implementation
                         return message.channel.send({content: `<:added:869842377202864128> Added Playlist: **${Searched.playlistInfo.name}**\n<:info:851700291716120587> No. of Tracks: ${Searched.tracks.length}\n<:classytube:923085509016829982> Requested by ${message.author.username}`, components: [row]});
-                    }
-                          //only track condition
-                     else {
+                    } else {
+                         /*
+                        * YOUTUBE TRACK INITIALIZATION
+                        */
                         //adds the youtube track to the queue
                         player.queue.add(Searched.tracks[0]);
                         //if player is ded or something do something
@@ -121,6 +135,7 @@ module.exports = {
                 let node = client.Lavasfy.nodes.get(client.config.nodes.id);
                 let Searched = await node.load(SearchString);
                 if (Searched.loadType === "PLAYLIST_LOADED") {
+                    message.reply({content: `Searching...`}).then(async(msg) => {
                     //init songs to be loaded
                     let songs = [];
                     //separating songs from playlist
@@ -138,7 +153,8 @@ module.exports = {
                         .setURL(SearchString)
                         .setStyle('LINK')
                     const row = new MessageActionRow().addComponents(linkButton);
-                    return message.channel.send({files: [spotifyPlaylistImage], components: [row]});
+                    return msg.edit({files: [spotifyPlaylistImage], components: [row]});
+                })
                 } else if((Searched.loadType.startsWith("TRACK"))) {
                     //adds the spotify track to the queue
                     player.queue.add(TrackUtils.build(Searched.tracks[0], message.author));
@@ -182,7 +198,8 @@ module.exports = {
                       //only track condition
                  else {
                     //adds the youtube track to the queue
-                    player.queue.add(Searched.tracks[0]);
+                    message.reply({content: `Searching...`}).then(async (msg) => {
+                        player.queue.add(Searched.tracks[0]);
                     //metadata grab ytsr
                     //youtube metadata
                     const songInfo = await ytSr.searchOne(Searched.tracks[0].uri);
@@ -205,10 +222,13 @@ module.exports = {
                         .setURL(Searched.tracks[0].uri)
                         .setStyle('LINK')
                     const row = new MessageActionRow().addComponents(linkButton);
-                    message.channel.send({files: [youtubeTrackImage], components: [row]});
+                    await msg.edit({content: `${invisibleChar}`, files: [youtubeTrackImage], components: [row]});
                     //if player is ded or something do something
+
                     if (!player.playing && !player.paused && !player.queue.size)
-                        return await player.play();
+                        await player.play();
+                    })
+                    
                 }
 
         }

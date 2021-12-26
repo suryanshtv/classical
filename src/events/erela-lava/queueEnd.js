@@ -5,6 +5,6 @@ const {queueEnd} = require("../../mapping/canvas");
 
 module.exports = async (client, player) => {
 	const channel = client.channels.cache.get(player.textChannel);
-	await channel.send({embeds: [new MessageEmbed().setDescription(`Queue has ended`).setColor("#e592d8")]})
+	await channel.send({content: `<:warn:923271071673766008> **Queue has ended**`})
 	await player.deleteNowPlayingMessage();
 }
