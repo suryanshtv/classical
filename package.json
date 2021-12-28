@@ -6,11 +6,11 @@
   "scripts": {
     "build": "node ./app.js"
   },
-  "engines": {
-    "node": "16.13.1"
-  }
   "author": "ItsSuryansh",
   "license": "ISC",
+  "engines": {
+    "node": "16.13.1"
+  },
   "dependencies": {
     "canvas": "^2.8.0",
     "chalk": "^4.1.2",
