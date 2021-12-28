@@ -6,6 +6,9 @@
   "scripts": {
     "build": "node ./app.js"
   },
+  "engines": {
+    "node": "16.13.1"
+  }
   "author": "ItsSuryansh",
   "license": "ISC",
   "dependencies": {
