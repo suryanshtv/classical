@@ -11,12 +11,12 @@ module.exports = {
 
   nodes: {
 
-      host: "lava.link",
-      port: 80,
-      password: ".",
+      host: "lavalink.devz.cloud",
+      port: 443,
+      password: "mathiscool",
       id: "1",
       retryDelay: 3000,
-      secure: false
+      secure: true
 
     },
 
