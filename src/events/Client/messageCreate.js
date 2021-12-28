@@ -12,8 +12,9 @@ module.exports = async (client, message) => {
     const mention = new RegExp(`^<@!?${client.user.id}>( |)$`);
     if (message.content.match(mention)) {
       const embed = new MessageEmbed()
-        .setColor(client.embedColor).setDescription(`Please do not use this bot for now, we are upgrading some stuffs.`)
-        //.setDescription(`**› Namaste, Konichiwa, Hello, Hola <3** **\n> My prefix is \`${prefix}\`**\n**› You must rename me as *classy-chan*, that makes my mood happy :) **`);
+        .setColor(client.embedColor)
+        //.setDescription(`Please do not use this bot for now, we are upgrading some stuffs.`)
+        .setDescription(`**› Namaste, Konichiwa, Hello, Hola <3** **\n> My prefix is \`${prefix}\`**`);
       message.channel.send({embeds: [embed]})
     }
    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
