@@ -3,9 +3,6 @@
   "version": "2021.1.0",
   "description": "classical im a chibi",
   "main": "app.js",
-  "scripts": {
-    "build": "node ./app.js"
-  },
   "author": "ItsSuryansh",
   "license": "ISC",
   "engines": {
