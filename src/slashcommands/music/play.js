@@ -1,7 +1,9 @@
 const { CommandInteraction, Client, MessageEmbed, MessageAttachment, MessageButton, MessageActionRow} = require("discord.js");
 const { TrackUtils} = require("erela.js");
-const { convertTime } = require('../../utils/conversion');
-const {spotifyPlaylist, spotifyTrack, youtubePlaylist, youtubeTrack} = require("../../mapping/playerCanvas");
+//const { convertTime } = require('../../utils/conversion');
+const ytSr = require("youtube-sr").default;
+const { spotifyPlaylist, spotifyTrack, youtubePlaylist, youtubeTrack } = require("../../mapping/playerCanvas");
+
 module.exports = {
   name: "play",
   description: "To play some song.",
@@ -40,7 +42,7 @@ module.exports = {
     
       if (player.state !== "CONNECTED") await player.connect();
       try {
-          if (player.queue.current === null) {
+          if (player.queue.totalSize === 0) {
               //no songs in queue part initialization
               if (SearchString.match(client.Lavasfy.spotifyPattern)) {
                   await client.Lavasfy.requestToken();
@@ -54,37 +56,62 @@ module.exports = {
                       player.queue.add(songs);
                       if (!player.playing && !player.paused && player.queue.totalSize === Searched.tracks.length)
                           await player.play();
-                      return await interaction.editReply({content: `**Added Playlist to queue** [${Searched.playlistInfo.name}](${SearchString}) - [\`${Searched.tracks.length}\`]`});
+                      //message button component
+                      const linkButton = new MessageButton()
+                      .setLabel('Playlist Link')
+                      .setURL(SearchString)
+                      .setStyle('LINK')
+                  const row = new MessageActionRow().addComponents(linkButton);
+                  //message implementation
+                  return await interaction.editReply({content: `<:added:869842377202864128> Added Playlist: **${Searched.playlistInfo.name}**\n<:info:851700291716120587> No. of Tracks: ${Searched.tracks.length}\n<:classically:923079588207271957> Requested by ${interaction.user.username}`, components: [row]});
                       //only song
                   } else if (Searched.loadType.startsWith("TRACK")) {
                       player.queue.add(TrackUtils.build(Searched.tracks[0], interaction.user));
                       if (!player.playing && !player.paused && !player.queue.size)
                           await player.play();
-                      return await interaction.editReply({content: `**Added to queue** - [${Searched.tracks[0].info.title}](${Searched.tracks[0].info.uri})`});
+                          const linkButton = new MessageButton()
+                          .setLabel('Track Link')
+                          .setURL(SearchString)
+                          .setStyle('LINK')
+                      const row = new MessageActionRow().addComponents(linkButton);
+                      //message implementation
+                      return await interaction.editReply({content: `<:added:869842377202864128> Added Track: **${Searched.tracks[0].info.title}**\n<:classically:923079588207271957> Requested by ${interaction.user.username}`, components: [row]});
                       //no results
                   } else {
-                      return await interaction.editReply({content: `**No results found**`});
+                      return await interaction.editReply({content: `🥲 **No results found**`});
                   }
 
               } else {
                   //youtube part
                   let Searched = await player.search(SearchString, interaction.user);
                   if (!player)
-                      return await interaction.editReply({content: `**No results found**`});
+                      return await interaction.editReply({content: `🥲 **No results found**`});
 
                   if (Searched.loadType === "NO_MATCHES")
-                      return await interaction.editReply({content: `**No results found**`});
+                      return await interaction.editReply({content: `🥲 **No results found**`});
                   else if (Searched.loadType === "PLAYLIST_LOADED") {
                       player.queue.add(Searched.tracks);
                       if (!player.playing && !player.paused &&
                           player.queue.totalSize === Searched.tracks.length)
                           await player.play();
-                      return await interaction.editReply({content: `Playlist added to queue - [${Searched.playlist.name}](${SearchString}) - \`${Searched.tracks.length}\` songs - \`[${await convertTime(Searched.playlist.duration)}]\``});
+                      //message components
+                      const linkButton = new MessageButton()
+                      .setLabel('Playlist Link')
+                      .setURL(SearchString)
+                      .setStyle('LINK')
+                      const row = new MessageActionRow().addComponents(linkButton);
+                      //message implementation
+                      return await interaction.editReply({content: `<:added:869842377202864128> Added Playlist: **${Searched.playlistInfo.name}**\n<:info:851700291716120587> No. of Tracks: ${Searched.tracks.length}\n<:classytube:923085509016829982> Requested by ${interaction.user.username}`, components: [row]});
                   } else {
                       player.queue.add(Searched.tracks[0], interaction.user);
                       if (!player.playing && !player.paused && !player.queue.size)
                           await player.play();
-                      return await interaction.editReply({content: `**Added Song to queue**\n[${Searched.tracks[0].title}](${Searched.tracks[0].uri}) - \`[${await convertTime(Searched.tracks[0].duration)}]\``});
+                      const linkButton = new MessageButton()
+                          .setLabel('Track Link')
+                          .setURL(Searched.tracks[0].uri)
+                          .setStyle('LINK')
+                          const row = new MessageActionRow().addComponents(linkButton);
+                      return await interaction.editReply({content: `<:added:869842377202864128> Added Track: **${Searched.tracks[0].title}**\n<:classytube:923085509016829982> Requested by ${interaction.user.username}`, components: [row]});
                   }
               }
           } else {
@@ -152,9 +179,21 @@ module.exports = {
                           .setStyle('LINK')
                       const row = new MessageActionRow().addComponents(linkButton);
                       return await interaction.editReply({files: [youtubePlaylistImage], components: [row]});
-                  }
-                  //only track condition
-                  else {
+                  } else if (Searched.loadType === "SEARCH_RESULT"){
+                      //only track condition
+                      //youtube metadata
+                    const songInfo = await ytSr.searchOne(Searched.tracks[0].uri);
+                    let song = {
+                                title: songInfo.title,
+                                url: songInfo.url,
+                                thumbnail: songInfo.thumbnail?.url,
+                                duration: songInfo.durationFormatted,
+                                channel: songInfo.channel?.name,
+                                views: songInfo.views,
+                                uploadedAt: songInfo.uploadedAt,
+                                channelIcon: songInfo.channel?.icon?.url,
+                            };
+
                       //adds the youtube track to the queue
                       player.queue.add(Searched.tracks[0]);
                       //if player is ded or something do something
@@ -162,7 +201,7 @@ module.exports = {
                           await player.play();
                       //image manipulation for track.
                       let youtubeTrackImage;
-                      await youtubeTrack(Searched, interaction.user).then((canvas) => youtubeTrackImage = new MessageAttachment(canvas.toBuffer(), 'youtubeTrack.png'));
+                      await youtubeTrack(song, interaction.user).then((canvas) => youtubeTrackImage = new MessageAttachment(canvas.toBuffer(), 'youtubeTrack.png'));
                       const linkButton = new MessageButton()
                           .setLabel('Track Link')
                           .setURL(Searched.tracks[0].uri)

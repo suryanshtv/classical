@@ -16,8 +16,7 @@ module.exports = async (client, player, track, payload) => {
     const songInfo = await spotifyLink.getPreview(link);
     thumbnail = songInfo.image;
   } if (link.includes('youtube')) {
-    const songInfo = await ytSr.searchOne(link);
-    thumbnail = songInfo.thumbnail?.url;
+    thumbnail = `https://img.youtube.com/vi/${track.identifier}/mqdefault.jpg`;
   }
 
    await base(title, artist, durationMS, link, thumbnail).then((canvas)=> baseImage = new MessageAttachment(canvas.toBuffer(), "base.png"));
