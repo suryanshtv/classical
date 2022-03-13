@@ -86,10 +86,10 @@ module.exports = {
                   let Searched = await player.search(SearchString, interaction.user);
                   if (!player)
                       return await interaction.editReply({content: `🥲 **No results found**`});
-
                   if (Searched.loadType === "NO_MATCHES")
-                      return await interaction.editReply({content: `🥲 **No results found**`});
-                  else if (Searched.loadType === "PLAYLIST_LOADED") {
+                  {
+                      return await interaction.editReply({content: `🥲 **No results found**`}); 
+                    } else if (Searched.loadType === "PLAYLIST_LOADED") {
                       player.queue.add(Searched.tracks);
                       if (!player.playing && !player.paused &&
                           player.queue.totalSize === Searched.tracks.length)
