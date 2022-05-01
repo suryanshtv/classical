@@ -1,5 +1,5 @@
 module.exports = {
-    token: process.env.TOKEN || "Nzg2ODY3MzA5NzI5Njc3MzIy.X9MpSQ.B7dnwiohXfVwNpsY86gunsFCVlY",  // your bot token
+    token: process.env.TOKEN || "Nzg2NjY1NzUzNDc4Mjk5NjU4.X9Jtkw.WVwTo9VUV-P076FS1Aj-IFR6LOs",  // your bot token
     prefix: process.env.PREFIX || "--", // bot prefix
     ownerID: process.env.OWNERID || "690484458209542224", //your discord id
     SpotifyID: process.env.SPOTIFYID || "da8e3b26c42a499e854d63af02c067e8", // spotify client id
@@ -11,9 +11,9 @@ module.exports = {
 
   nodes: {
 
-      host: "mc.minimal.team",
+      host: "0.0.0.0",
       port: 2333,
-      password: "Hmnode.Minimal.LaLink.Erela",
+      password: "VPS_lavaNode",
       id: "1",
       retryDelay: 3000,
       secure: false

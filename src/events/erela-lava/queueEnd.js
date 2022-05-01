@@ -10,7 +10,7 @@ module.exports = async (client, player) => {
 	//delayed
 	if (!player.twentyFourSeven)
 	{
-    await delay(30000);
+    await delay(120000);
 	if (player.queue.totalSize === 0 && !player.twentyFourSeven)
 	{
     await player.destroy();

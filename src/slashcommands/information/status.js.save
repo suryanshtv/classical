@@ -7,7 +7,7 @@ const si = require('systeminformation');
 
 module.exports = {
     name: "status",
-    description: "status?",
+    description: "",
     run: async (client, interaction) => {
 
       await interaction.deferReply({
@@ -28,7 +28,7 @@ client.guilds.cache.forEach((guild) => {
             .setColor(interaction.client.embedColor)
             .setThumbnail(interaction.client.user.displayAvatarURL())
             .setColor("#F6C6EA")
-            .setDescription(`Technical nerds`)
+            .setDescription(`My status 💖, already taken 😜`)
             .addField(`Discord.js version`, `\`${version}\``, true)
             .addField(`Node.js version`, `\`${process.version}\``, true)
             .addField(`Uptime`, `\`${duration1}\``, true)

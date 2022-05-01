@@ -41,18 +41,18 @@ module.exports = {
         const emojirewind = client.emoji.rewind;
 
         const song = player.queue.current;
-        
+
         if (time <= duration) {
             if (time > position) {
                 player.seek(time);
-                 return await interaction.editReply({content: `${emojiforward} **Forward**\n[${song.title}](${song.uri})\n\`${convertTime(time)} / ${convertTime(duration)}\``});
+                 return await interaction.editReply({content: `<:fastforward:968807888149680168> **Forward**\n<:info:851700291716120587> ${song.title}\n<:check:968808744702050314> ${await convertTime(time)} / ${await convertTime(duration)}`});
             } else {
                 player.seek(time);
-           return await interaction.editReply({content: `${emojirewind} **Rewind**\n[${song.title}](${song.uri})\n\`${convertTime(time)} / ${convertTime(duration)}\``});
+           return await interaction.editReply({content: `<:rewind:968808156912295946>  **Rewind**\n<:info:851700291716120587> ${song.title}\n<:check:968808744702050314> ${await convertTime(time)} / ${await convertTime(duration)}`});
             }
         } else {
-             return await interaction.editReply({content: `Seek duration exceeds Song duration.\nSong duration: \`${convertTime(duration)}\``});
+             return await interaction.editReply({content: `Seek duration exceeds Song duration. <:warn:923271071673766008> Song duration: ${await convertTime(duration)}`});
         }
-	
+
     }
 };

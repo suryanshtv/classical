@@ -31,7 +31,7 @@ module.exports = {
       const emojiplaylist = client.emoji.playlist;
       let SearchString = interaction.options.getString("input");
       let res;
-    
+
     let player = client.manager.create({
       guild: interaction.guildId,
       textChannel: interaction.channelId,
@@ -39,7 +39,7 @@ module.exports = {
       selfDeafen: true,
       volume: 100
     });
-    
+
       if (player.state !== "CONNECTED") await player.connect();
       try {
           if (player.queue.totalSize === 0) {
@@ -88,7 +88,7 @@ module.exports = {
                       return await interaction.editReply({content: `🥲 **No results found**`});
                   if (Searched.loadType === "NO_MATCHES")
                   {
-                      return await interaction.editReply({content: `🥲 **No results found**`}); 
+                      return await interaction.editReply({content: `🥲 **No results found**`});
                     } else if (Searched.loadType === "PLAYLIST_LOADED") {
                       player.queue.add(Searched.tracks);
                       if (!player.playing && !player.paused &&
@@ -132,14 +132,15 @@ module.exports = {
                       if (!player.playing && !player.paused && player.queue.totalSize === Searched.tracks.length)
                           await player.play();
                       //image manipulation for spotify playlist.
-                      let spotifyPlaylistImage;
-                      await spotifyPlaylist(SearchString, interaction.user).then((canvas) => spotifyPlaylistImage = new MessageAttachment(canvas.toBuffer(), 'spotifyPlaylist.png'));
+                      //let spotifyPlaylistImage;
+                      //await spotifyPlaylist(SearchString, interaction.user).then((canvas) => spotifyPlaylistImage = new MessageAttachment(canvas.toBuffer(), 'spotifyPlaylist.png'));
                       const linkButton = new MessageButton()
                           .setLabel('Playlist Link')
                           .setURL(SearchString)
                           .setStyle('LINK')
                       const row = new MessageActionRow().addComponents(linkButton);
-                      return await interaction.editReply({files: [spotifyPlaylistImage], components: [row]});
+                      //return await interaction.editReply({files: [spotifyPlaylistImage], components: [row]});
+                      return await interaction.editReply({content: `<:added:869842377202864128> Added Playlist: **${Searched.playlistInfo.name}**\n<:info:851700291716120587> No. of Tracks: ${Searched.tracks.length}\n<:classically:923079588207271957> Requested by ${interaction.user.username}\n||Search UI for spotifyPlaylist is still under development||`, components: [row]});
                   } else if((Searched.loadType.startsWith("TRACK"))) {
                       //adds the spotify track to the queue
                       player.queue.add(TrackUtils.build(Searched.tracks[0], interaction.user));

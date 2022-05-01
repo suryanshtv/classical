@@ -52,7 +52,7 @@ module.exports = {
         ctx.font = '22px "Rubik", "Noto", "Segeo"';
         ctx.fillText(`tracks: `+ length, 492, 124);
         ctx.fillText(`loaded.`, 680, 124);
-        ctx.fillText(`Requested by `+ author.username, 495, 276)
+        ctx.fillText(`✨🎶`, 495, 276)
         const overlay = await loadImage('./src/mapping/images/spotifyPlaylist.png');
         ctx.drawImage(overlay, 0, 0, canvas.width, canvas.height);
         return canvas;

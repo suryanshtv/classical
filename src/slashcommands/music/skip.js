@@ -3,12 +3,12 @@ const { CommandInteraction, Client, MessageEmbed } = require("discord.js");
 module.exports = {
         name: "skip",
         description: "To skip a song/track from the queue.",
-    
+
     /**
-     * 
-     * @param {Client} client 
-     * @param {CommandInteraction} interaction 
-     * @param {String} color 
+     *
+     * @param {Client} client
+     * @param {CommandInteraction} interaction
+     * @param {String} color
      */
 
   run: async (client, interaction) => {
@@ -21,27 +21,27 @@ module.exports = {
         const emojiskip = client.emoji.skip;
   if(!interaction.member.voice?.channel) return await interaction.editReply({content: "You are not connected to a voice channel to use this command."
     }).catch(() => {});
-    
+
   if(interaction.guild.me.voice.channel && interaction.member.voice?.channelId !== interaction.guild.me.voice.channelId) return await interaction.editReply({ content: `You are not connected to ${interaction.guild.me.voice.channel} to use this command.`
     }).catch(() => {});
       const player = client.manager.get(interaction.guildId);
-    if(!player) return await interaction.editReply({ content: `Nothing is playing right now.`
+    if(!player) return await interaction.editReply({ content: `<:warn:923271071673766008> Nothing is playing right now.`
     }).catch(() => {});
     if(player && player.state !== "CONNECTED") {
-       player.destroy(); 
-      return await interaction.editReply({ content: `Nothing is playing right now.`
+       player.destroy();
+      return await interaction.editReply({ content: `<:warn:923271071673766008> Nothing is playing right now.`
       }).catch(() => {});
     };
-   if(!player.queue) return await interaction.editReply({ content: "Nothing is playing right now."
+   if(!player.queue) return await interaction.editReply({ content: "<:warn:923271071673766008> Nothing is playing right now."
    }).catch(() => {});
-        if(!player.queue.current) return await interaction.editReply({ content: "Nothing is playing right now."
+        if(!player.queue.current) return await interaction.editReply({ content: "<:warn:923271071673766008> Nothing is playing right now."
       }).catch(() => {});
 
-        if(!player.queue.size) return await interaction.editReply({ content: "No songs left in the queue to skip."
+        if(!player.queue.size) return await interaction.editReply({ content: "<:warn:923271071673766008>  No songs left in the queue to skip."
       }).catch(() => {});
 
         player.stop();
-        return await interaction.editReply({ content: `${emojiskip} **Skipped** \n[${player.queue.current.title}](${player.queue.current.uri})`
+        return await interaction.editReply({ content: `<:skip:923831762830897152>  Skipped Track: ${player.queue.current.title}`
         }).catch(() => {});
   }
 					}
