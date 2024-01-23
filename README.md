@@ -1,3 +1,4 @@
+!!pretty outdated and the bot is dead
 
 # classy-chan-v2022.1
 
